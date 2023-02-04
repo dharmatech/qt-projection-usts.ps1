@@ -20,12 +20,20 @@
 #     '2023-01-04'
 # )
 
+# $dates = @(
+#     '2023-01-04'
+#     '2023-01-11'
+#     '2023-01-18'
+#     '2023-01-25'
+#     '2023-02-01'
+# )
+
 $dates = @(
-    '2023-01-04'
-    '2023-01-11'
-    '2023-01-18'
-    '2023-01-25'
     '2023-02-01'
+    '2023-02-08'
+    '2023-02-15'
+    '2023-02-22'
+    '2023-03-01'
 )
 
 $result = Invoke-RestMethod ('https://markets.newyorkfed.org/api/soma/tsy/get/all/asof/{0}.json' -f $dates[0])
@@ -79,7 +87,9 @@ function loop ($dates)
         $a = $dates[0]
         $b = $dates[1]
                 
-        $items = $maturing | Where-Object maturityDate -GE $a | Where-Object maturityDate -LE $b
+        # $items = $maturing | Where-Object maturityDate -GE $a | Where-Object maturityDate -LE $b
+
+        $items = $maturing | Where-Object maturityDate -GT $a | Where-Object maturityDate -LE $b
                 
         $items[-1].rolloff_week_total = ('{0,20}' -f ($items | Measure-Object -Property rolloff -Sum).Sum.ToString('C0'))
 
